@@ -39,18 +39,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
-//        val message = """
-//                 Md. Farhan Hossain
-//            Junior Mobile App Developer
-//                    BdCalling It
-//        """.trimIndent()
-//
-//        val dialog = AlertDialog.Builder(this)
-//            .setTitle("This app is property of ")
-//            .setMessage(message)
-//            .create()
-//        dialog.show()
-
         navController.addOnDestinationChangedListener { _,destination,_ ->
             if(destination.id == R.id.fragDevInfo ) {
                 binding.bottomNav.visibility = View.GONE
