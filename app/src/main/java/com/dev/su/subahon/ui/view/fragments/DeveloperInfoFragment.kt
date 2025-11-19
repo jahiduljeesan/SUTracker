@@ -128,17 +128,17 @@ class DeveloperInfoFragment : Fragment() {
             "zannatulf83"
         ))
 
-//        //Nahid
-//        developerList.add(Developer(
-//            R.drawable.nahid_image,
-//            "Md.Nahid Hasan",
-//            "CSE2201025036",
-//            "CSE",
-//            "25M1",
-//            "21nahidhassan@gmail.com",
-//            "share/19BZUz3sbP/",
-//            "8801790797261",
-//            "https://www.instagram.com/invites/contact/?igsh=1tlx4lshd7qyq&utm_content=6m9537d"
-//        ))
+        //Nahid
+        developerList.add(Developer(
+            R.drawable.nahid_image,
+            "Md.Nahid Hasan",
+            "CSE2201025036",
+            "CSE",
+            "25M1",
+            "21nahidhassan@gmail.com",
+            "share/19BZUz3sbP/",
+            "8801790797261",
+            "https://www.instagram.com/invites/contact/?igsh=1tlx4lshd7qyq&utm_content=6m9537d"
+        ))
     }
 }
