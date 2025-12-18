@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/bg_glossy_light"
+    android:padding="12dp">
+    <TextView
+        android:id="@+id/tvBusName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Bus #01 – Afternoon Incoming"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#00695C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivExpand"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/ivExpand"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_expand_more"
+        app:tint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvDriver"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Driver: Md. Rajan (01935768889)"
+        android:textSize="13sp"
+        android:textColor="#004D40"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tvBusName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <LinearLayout
+        android:id="@+id/layoutExpand"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvDriver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:text="Route"
+            android:textStyle="bold"
+            android:textColor="#00796B"
+            android:textSize="14sp" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvRoute"
+            android:text="Technical → Mirpur-1 → Mirpur-10 → Green Road"
+            android:textSize="13sp"
+            android:textColor="#004D40"
+            android:layout_marginBottom="6dp" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+        <!-- Schedule -->
+        <TextView
+            android:text="Schedule"
+            android:textStyle="bold"
+            android:textColor="#00796B"
+            android:textSize="14sp" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/layoutSchedule"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

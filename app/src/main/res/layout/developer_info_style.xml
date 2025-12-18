@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/developerCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_10sdp"
+    android:backgroundTint="@android:color/white"
+    app:cardCornerRadius="@dimen/_14sdp"
+    app:cardElevation="@dimen/_5sdp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_14sdp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/devImage"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="@dimen/_72sdp"
+            android:background="@drawable/profile_image_border"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+        <TextView
+            android:id="@+id/devName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/carve_font"
+            android:text="Subahon Mahmud"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/devImage"
+            app:layout_constraintTop_toTopOf="@id/devImage" />
+
+        <TextView
+            android:id="@+id/devId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="ID: 200101"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="#FE2F2D2D"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/devName"
+            app:layout_constraintTop_toBottomOf="@id/devName" />
+
+        <TextView
+            android:id="@+id/devDept"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="CSE Department"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="#FE2F2D2D"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/devId"
+            app:layout_constraintTop_toBottomOf="@id/devId" />
+
+        <TextView
+            android:id="@+id/devBatch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Batch: 47"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="#FE2F2D2D"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/devDept"
+            app:layout_constraintTop_toBottomOf="@id/devDept" />
+
+        <LinearLayout
+            android:id="@+id/contactRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/devImage">
+
+            <ImageButton
+                android:id="@+id/btnMail"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Email"
+                android:padding="@dimen/_4sdp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_gmail" />
+
+            <ImageButton
+                android:id="@+id/btnFacebook"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Facebook"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_facebook" />
+
+            <ImageButton
+                android:id="@+id/btnWhatsapp"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="WhatsApp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_whatsapp" />
+
+            <ImageButton
+                android:id="@+id/btnInstagram"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Instagram"
+                android:padding="@dimen/_5sdp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_instagram" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

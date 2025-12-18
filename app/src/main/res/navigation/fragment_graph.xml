@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_graph"
+    app:startDestination="@id/fragHome"
+    >
+
+    <fragment
+        android:id="@+id/fragHome"
+        android:label="Home"
+        android:name="com.dev.su.subahon.ui.view.fragments.StudentMapFragment"/>
+
+    <fragment
+        android:id="@+id/fragSchedule"
+        android:label="Schedule"
+        android:name="com.dev.su.subahon.ui.view.fragments.BusScheduleFragment"/>
+
+    <fragment android:id="@+id/fragProfile"
+        android:label="Profile"
+        android:name="com.dev.su.subahon.ui.view.fragments.ProfileFragment">
+        <action
+            android:id="@+id/fragProfile_to_fragDevInfo"
+            app:destination="@id/fragDevInfo"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragDevInfo"
+        android:label="Developer Info"
+        android:name="com.dev.su.subahon.ui.view.fragments.DeveloperInfoFragment"/>
+
+<!--    <fragment -->
+<!--        android:id="@+id/fragAppInfo"-->
+<!--        android:label="App Info"-->
+<!--        android:name=""-->
+
+</navigation>

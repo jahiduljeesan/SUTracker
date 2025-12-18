@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SU Bahon</string>
+    <string name="hello_blank_fragment">Hello Signup fragment</string>
+    <string name="signup_btn_text">Don\'t have an account? <u><i>Sign up</i></u></string>
+    <string name="login_btn_text">Already have an account? <u><i>Log in</i></u></string>
+    <string-array name="heading_options">
+        <item>Up</item>
+        <item>Down</item>
+    </string-array>
+</resources>

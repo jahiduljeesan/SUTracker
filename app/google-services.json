@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "420727292321",
+    "project_id": "su-bahon",
+    "storage_bucket": "su-bahon.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420727292321:android:12ed74f9662a5e7dae8be0",
+        "android_client_info": {
+          "package_name": "com.dev.su.subahon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1JQcW5IjBbHfpTOu6EEllxtofKxsZ8BI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
