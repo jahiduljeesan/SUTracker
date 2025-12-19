@@ -15,7 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.su.subahon.R
 import com.dev.su.subahon.data.model.BusDisplay
@@ -48,11 +50,15 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
     private var locationCallback: LocationCallback? = null
 
     private var studentLocation: LatLng? = null
-    private var isTracking = false   // ← OLD LOGIC
+    private var isTracking = false
 
     // ================= LIFECYCLE =================
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentStudentMapBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -63,11 +69,17 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         binding.lottieLoading.visibility = View.VISIBLE
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        checkUserRole()
-        observeViewModel()
+        // ✅ SAFE coroutine tied to VIEW lifecycle
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                checkUserRole()
+                observeViewModel()
+            }
+        }
     }
 
     override fun onStart() {
@@ -112,17 +124,26 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun enableUserLocation() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             map.isMyLocationEnabled = true
             startStudentLocationUpdates()
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1001)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1001
+            )
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun startStudentLocationUpdates() {
-        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
+        val request =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let {
@@ -130,7 +151,11 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-        fusedLocationClient.requestLocationUpdates(request, locationCallback!!, Looper.getMainLooper())
+        fusedLocationClient.requestLocationUpdates(
+            request,
+            locationCallback!!,
+            Looper.getMainLooper()
+        )
     }
 
     private fun stopLocationUpdates() {
@@ -140,20 +165,34 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
 
     // ================= ROLE UI =================
 
-    private fun checkUserRole() {
+    private suspend fun checkUserRole() {
         val uid = FirebaseUtil.auth.currentUser?.uid ?: return
-        lifecycleScope.launch {
-            val role = FirebaseUtil.firestore.collection("users").document(uid).get().await().getString("role")
-            if (role == "driver") setupDriverUI() else setupStudentUI()
-        }
+
+        val role = FirebaseUtil.firestore
+            .collection("users")
+            .document(uid)
+            .get()
+            .await()
+            .getString("role")
+
+        if (_binding == null) return
+
+        if (role == "driver") setupDriverUI() else setupStudentUI()
     }
 
     private fun setupStudentUI() {
+        if (_binding == null) return
+
         binding.studentBottomView.visibility = View.VISIBLE
         binding.driverBottomView.visibility = View.GONE
 
         adapter = BusListAdapter(emptyList()) { phone ->
-            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${phone ?: ""}")))
+            startActivity(
+                Intent(
+                    Intent.ACTION_DIAL,
+                    Uri.parse("tel:${phone ?: ""}")
+                )
+            )
         }
 
         binding.rvRoutes.apply {
@@ -164,6 +203,8 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupDriverUI() {
+        if (_binding == null) return
+
         binding.driverBottomView.visibility = View.VISIBLE
         binding.studentBottomView.visibility = View.GONE
 
@@ -188,7 +229,9 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         FirebaseUtil.firestore.collection("users").document(uid)
             .update("status", "started", "heading", heading)
 
-        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
+        val request =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let {
@@ -196,7 +239,12 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-        fusedLocationClient.requestLocationUpdates(request, locationCallback!!, Looper.getMainLooper())
+
+        fusedLocationClient.requestLocationUpdates(
+            request,
+            locationCallback!!,
+            Looper.getMainLooper()
+        )
     }
 
     private fun stopDriverTracking() {
@@ -207,7 +255,9 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         binding.btnStart.playAnimation()
 
         val uid = FirebaseUtil.auth.currentUser?.uid ?: return
-        FirebaseUtil.firestore.collection("users").document(uid).update("status", "stopped")
+        FirebaseUtil.firestore.collection("users")
+            .document(uid)
+            .update("status", "stopped")
 
         stopLocationUpdates()
     }
@@ -215,18 +265,19 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
     private fun uploadDriverLocation(lat: Double, lng: Double) {
         val uid = FirebaseUtil.auth.currentUser?.uid ?: return
         FirebaseUtil.firestore.collection("users").document(uid)
-            .update("location", GeoPoint(lat, lng), "timestamp", com.google.firebase.Timestamp.now())
+            .update(
+                "location", GeoPoint(lat, lng),
+                "timestamp", com.google.firebase.Timestamp.now()
+            )
     }
 
     // ================= OBSERVE =================
 
     private fun observeViewModel() {
-
         viewModel.buses.observe(viewLifecycleOwner) { buses ->
-            if (!::map.isInitialized) return@observe
+            if (!::map.isInitialized || _binding == null) return@observe
 
             binding.lottieLoading.visibility = View.GONE
-
             adapter?.updateList(buses)
             updateMarkers(buses)
         }
@@ -253,7 +304,11 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(pos)
                         .title(bus.busName)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus_icon_su))
+                        .icon(
+                            BitmapDescriptorFactory.fromResource(
+                                R.drawable.bus_icon_su
+                            )
+                        )
                 )
                 marker?.tag = bus
                 marker?.let { markerMap[key] = it }
@@ -266,7 +321,9 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         }
 
         map.setOnMarkerClickListener {
-            (it.tag as? BusDisplay)?.let { bus -> showBusDetailsDialog(bus) }
+            (it.tag as? BusDisplay)?.let { bus ->
+                showBusDetailsDialog(bus)
+            }
             true
         }
     }
@@ -278,7 +335,10 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         routes.forEach {
             polylines.add(
                 map.addPolyline(
-                    PolylineOptions().addAll(it).width(10f).color(Color.BLUE)
+                    PolylineOptions()
+                        .addAll(it)
+                        .width(10f)
+                        .color(Color.BLUE)
                 )
             )
         }
@@ -294,10 +354,17 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
     // ================= DIALOG =================
 
     private fun showBusDetailsDialog(bus: BusDisplay) {
-        val dialog = BusInfoAlertLayoutBinding.inflate(LayoutInflater.from(requireContext()))
+        val dialog =
+            BusInfoAlertLayoutBinding.inflate(LayoutInflater.from(requireContext()))
         val userLatLng = studentLocation ?: LatLng(23.7525, 90.3870)
 
-        val distance = calculateDistance(bus.locationLat, bus.locationLng, userLatLng.latitude, userLatLng.longitude)
+        val distance = calculateDistance(
+            bus.locationLat,
+            bus.locationLng,
+            userLatLng.latitude,
+            userLatLng.longitude
+        )
+
         val eta = ((distance / 20) * 60).toInt()
 
         dialog.apply {
@@ -305,14 +372,22 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
             tvDriverName.text = "👨‍✈️ ${bus.busName}"
             tvHeading.text = "⬆️ ${bus.heading}"
             tvDistance.text = "📏 ${"%.2f".format(distance)} km"
-            tvArrivalTime.text = if (eta <= 1) "Arriving now" else "Arrives in $eta min"
+            tvArrivalTime.text =
+                if (eta <= 1) "Arriving now" else "Arrives in $eta min"
 
             btnCall.setOnClickListener {
-                startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${bus.phone}")))
+                startActivity(
+                    Intent(
+                        Intent.ACTION_DIAL,
+                        Uri.parse("tel:${bus.phone}")
+                    )
+                )
             }
         }
 
-        AlertDialog.Builder(requireContext()).setView(dialog.root).show()
+        AlertDialog.Builder(requireContext())
+            .setView(dialog.root)
+            .show()
     }
 
     // ================= UTILS =================
@@ -325,7 +400,9 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
 
         handler.post(object : Runnable {
             override fun run() {
-                val t = ((System.currentTimeMillis() - startTime).toFloat() / duration).coerceAtMost(1f)
+                val t =
+                    ((System.currentTimeMillis() - startTime).toFloat() / duration)
+                        .coerceAtMost(1f)
                 marker.position = LatLng(
                     start.latitude + (to.latitude - start.latitude) * t,
                     start.longitude + (to.longitude - start.longitude) * t
@@ -335,7 +412,12 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    private fun calculateDistance(
+        lat1: Double,
+        lon1: Double,
+        lat2: Double,
+        lon2: Double
+    ): Double {
         val R = 6371
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)

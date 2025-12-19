@@ -1,6 +1,5 @@
 package com.dev.su.subahon.ui.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,49 +10,54 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dev.su.subahon.R
 import com.dev.su.subahon.data.model.BusModel
 
-class BusAdapter(private val busList: List<BusModel>) :
-    RecyclerView.Adapter<BusAdapter.BusViewHolder>() {
+class BusAdapter(
+    private val list: List<BusModel>,
+    private var selectedDay: String
+) : RecyclerView.Adapter<BusAdapter.VH>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BusViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_bus_expandable, parent, false)
-        return BusViewHolder(view)
+    inner class VH(v: View) : RecyclerView.ViewHolder(v) {
+        val busNo: TextView = v.findViewById(R.id.tvBusNo)
+        val trip: TextView = v.findViewById(R.id.tvTrip)
+        val driver: TextView = v.findViewById(R.id.tvDriver)
+        val stops: TextView = v.findViewById(R.id.tvStops)
+        val schedule: TextView = v.findViewById(R.id.tvSchedule)
+        val expand: LinearLayout = v.findViewById(R.id.layoutExpand)
+        val arrow: ImageView = v.findViewById(R.id.imgExpand)
     }
 
-    override fun getItemCount() = busList.size
+    override fun onCreateViewHolder(p: ViewGroup, v: Int): VH {
+        return VH(LayoutInflater.from(p.context).inflate(R.layout.item_bus, p, false))
+    }
 
-    override fun onBindViewHolder(holder: BusViewHolder, position: Int) {
-        val bus = busList[position]
+    override fun getItemCount() = list.size
 
-        holder.tvBusName.text = "${bus.busNo} – ${bus.tripType}"
-        holder.tvDriver.text = "Driver: ${bus.driverName} (${bus.driverPhone})"
-        holder.tvRoute.text = bus.stops.joinToString(" → ")
+    override fun onBindViewHolder(h: VH, i: Int) {
+        val bus = list[i]
 
-        holder.layoutExpand.visibility = if (bus.isExpanded) View.VISIBLE else View.GONE
-        holder.ivExpand.rotation = if (bus.isExpanded) 180f else 0f
+        h.busNo.text = bus.busNo
+        h.trip.text = bus.tripType
+        h.driver.text = "Driver: ${bus.driver} | ${bus.phone}"
 
-        holder.ivExpand.setOnClickListener {
-            bus.isExpanded = !bus.isExpanded
-            notifyItemChanged(position)
-        }
+        h.expand.visibility = if (bus.expanded) View.VISIBLE else View.GONE
+        h.arrow.rotation = if (bus.expanded) 180f else 0f
 
-        // Schedule
-        holder.layoutSchedule.removeAllViews()
-        bus.schedule.forEach { (day, times) ->
-            val tv = TextView(holder.itemView.context)
-            tv.text = "$day : ${times.joinToString(", ")}"
-            tv.textSize = 13f
-            tv.setTextColor(Color.DKGRAY)
-            holder.layoutSchedule.addView(tv)
+        // Stops (wrapped text)
+        h.stops.text = "Stops:\n• " + bus.stops.joinToString(" → ")
+
+        // Schedule (day-based)
+        val times = bus.schedule[selectedDay] ?: emptyList()
+        h.schedule.text =
+            if (times.isEmpty()) "No service on $selectedDay"
+            else "Schedule ($selectedDay):\n" + times.joinToString("   ")
+
+        h.itemView.setOnClickListener {
+            bus.expanded = !bus.expanded
+            notifyItemChanged(i)
         }
     }
 
-    class BusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvBusName: TextView = view.findViewById(R.id.tvBusName)
-        val tvDriver: TextView = view.findViewById(R.id.tvDriver)
-        val ivExpand: ImageView = view.findViewById(R.id.ivExpand)
-        val layoutExpand: LinearLayout = view.findViewById(R.id.layoutExpand)
-        val tvRoute: TextView = view.findViewById(R.id.tvRoute)
-        val layoutSchedule: LinearLayout = view.findViewById(R.id.layoutSchedule)
+    fun updateDay(day: String) {
+        selectedDay = day
+        notifyDataSetChanged()
     }
 }
