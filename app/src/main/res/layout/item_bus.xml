@@ -44,7 +44,8 @@
             android:id="@+id/imgExpand"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/arrow_down_float"
+            android:src="@drawable/ic_expand_more"
+            app:tint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 

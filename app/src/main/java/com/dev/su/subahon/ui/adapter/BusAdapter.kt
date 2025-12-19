@@ -51,6 +51,9 @@ class BusAdapter(
             else "Schedule ($selectedDay):\n" + times.joinToString("   ")
 
         h.itemView.setOnClickListener {
+            h.arrow.setImageResource(
+                if (bus.expanded) R.drawable.ic_expand_less else R.drawable.ic_expand_more
+            )
             bus.expanded = !bus.expanded
             notifyItemChanged(i)
         }
