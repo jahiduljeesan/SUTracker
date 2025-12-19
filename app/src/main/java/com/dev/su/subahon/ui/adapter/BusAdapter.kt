@@ -36,7 +36,7 @@ class BusAdapter(
 
         h.busNo.text = bus.busNo
         h.trip.text = bus.tripType
-        h.driver.text = "Driver: ${bus.driver} | ${bus.phone}"
+        h.driver.text = "Driver: ${bus.driver.name} | ${bus.driver.phone}"
 
         h.expand.visibility = if (bus.expanded) View.VISIBLE else View.GONE
         h.arrow.rotation = if (bus.expanded) 180f else 0f

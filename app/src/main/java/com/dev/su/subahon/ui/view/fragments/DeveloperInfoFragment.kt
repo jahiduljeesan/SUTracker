@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.su.subahon.R
 import com.dev.su.subahon.data.model.Developer
@@ -33,6 +34,10 @@ class DeveloperInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //adding developers list
         addDeveloperList()
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.rvDevList.layoutManager = LinearLayoutManager(requireContext())
         val adapter = DevAdapter(
