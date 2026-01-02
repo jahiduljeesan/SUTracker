@@ -57,6 +57,10 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.fragProfile_to_fragDevInfo)
         }
 
+        binding.optionAdmin.setOnClickListener {
+            findNavController().navigate(R.id.fragProfile_to_fragAdmin)
+        }
+
     }
 
 }

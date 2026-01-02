@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity() {
 //        dialog.show()
 
         navController.addOnDestinationChangedListener { _,destination,_ ->
-            if(destination.id == R.id.fragDevInfo ) {
+            if(destination.id == R.id.fragDevInfo
+                || destination.id == R.id.fragAdmin) {
                 binding.bottomNav.visibility = View.GONE
             } else {
                 binding.bottomNav.visibility = View.VISIBLE

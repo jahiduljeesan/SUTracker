@@ -21,12 +21,21 @@
         <action
             android:id="@+id/fragProfile_to_fragDevInfo"
             app:destination="@id/fragDevInfo"/>
+        <action
+            android:id="@+id/fragProfile_to_fragAdmin"
+            app:destination="@id/fragAdmin"/>
+
     </fragment>
 
     <fragment
         android:id="@+id/fragDevInfo"
         android:label="Developer Info"
         android:name="com.dev.su.subahon.ui.view.fragments.DeveloperInfoFragment"/>
+
+    <fragment
+        android:id="@+id/fragAdmin"
+        android:label="Admin"
+        android:name="com.dev.su.subahon.ui.view.fragments.AdminFragment"/>
 
 <!--    <fragment -->
 <!--        android:id="@+id/fragAppInfo"-->
