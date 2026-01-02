@@ -1,5 +1,6 @@
 package com.dev.su.subahon.ui.view.fragments
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -94,12 +95,30 @@ class SignupFragment : Fragment() {
                         isAdmin = false,
                     )
 
+
                     firestore.collection("users").document(userId)
                         .set(user)
                         .addOnSuccessListener {
+                            var role = ""
+                            firestore.collection("users").document(userId)
+                                .get()
+                                .addOnSuccessListener { documentSnapshot ->
+                                    if (documentSnapshot.exists()) {
+                                        role = documentSnapshot.getString("role") ?: ""
+                                    }
+                                }
+
                             LoginSignupAnimationHelper.showSuccessAnimation(binding.lottieAnimation) {
-                                startActivity(Intent(requireContext(), MainActivity::class.java))
-                                requireActivity().finish()
+                                if(role == "student" || role == "driver" ) {
+                                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                                    requireActivity().finish()
+                                } else {
+                                    AlertDialog.Builder(requireContext()).setTitle("Request Pending....")
+                                        .setMessage("Authority will approve your joining request")
+                                        .setPositiveButton("Okay") {dialog,_ ->
+                                            requireActivity().finish()
+                                        }.create().show()
+                                }
                             }
                         }
                         .addOnFailureListener {

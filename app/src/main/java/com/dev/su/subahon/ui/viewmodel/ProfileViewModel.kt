@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dev.su.subahon.data.model.User
 import com.dev.su.subahon.utils.FirebaseUtil
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -14,7 +15,7 @@ class ProfileViewModel: ViewModel() {
     val user: LiveData<User> = _user
 
     fun fetchUserData() {
-        val uid = FirebaseUtil.auth.currentUser?.uid?:return
+        val uid = FirebaseAuth.getInstance().currentUser?.uid?:return
 
         viewModelScope.launch {
             try {

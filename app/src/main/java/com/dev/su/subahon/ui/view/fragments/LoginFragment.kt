@@ -12,11 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.dev.su.subahon.R
 import com.dev.su.subahon.databinding.FragmentLoginBinding
 import com.dev.su.subahon.ui.view.activity.MainActivity
-import com.dev.su.subahon.utils.FirebaseUtil
 import com.dev.su.subahon.utils.LoginSignupAnimationHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -70,17 +68,22 @@ class LoginFragment : Fragment() {
                             }
                         }
 
-                    if(role == "student" || role == "driver" ) {
-                        startActivity(Intent(requireContext(), MainActivity::class.java))
-                        requireActivity().finish()
-                    } else {
-                        AlertDialog.Builder(requireContext()).setTitle("Request Pending....")
-                            .setMessage("Authority will approve your joining request")
-                            .setPositiveButton("Okay") {dialog,_ ->
-                                requireActivity().finish()
-                            }
+                    LoginSignupAnimationHelper.showSuccessAnimation(binding.lottieAnimation) {
+                        if(role == "student" || role == "driver" ) {
+                            startActivity(Intent(requireContext(), MainActivity::class.java))
+                            requireActivity().finish()
+                        } else {
+                            AlertDialog.Builder(requireContext()).setTitle("Request Pending....")
+                                .setMessage("Authority will approve your joining request")
+                                .setPositiveButton("Okay") {dialog,_ ->
+                                    requireActivity().finish()
+                                }.create().show()
+                        }
                     }
 
+                }else {
+                    Toast.makeText(requireContext(), "Auth Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    LoginSignupAnimationHelper.hideAnimation(binding.lottieAnimation)
                 }
             }
     }
