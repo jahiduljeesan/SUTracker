@@ -1,5 +1,6 @@
 package com.dev.su.subahon.ui.view.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,9 +14,14 @@ import com.dev.su.subahon.databinding.FragmentLoginBinding
 import com.dev.su.subahon.ui.view.activity.MainActivity
 import com.dev.su.subahon.utils.FirebaseUtil
 import com.dev.su.subahon.utils.LoginSignupAnimationHelper
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
+    private lateinit var auth : FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +42,9 @@ class LoginFragment : Fragment() {
             setLogin()
         }
 
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+
     }
     fun setLogin() {
         val email = binding.etEmail.text.toString().trim()
@@ -48,52 +57,33 @@ class LoginFragment : Fragment() {
 
         LoginSignupAnimationHelper.showAnimation(binding.lottieAnimation)
 
-        FirebaseUtil.auth.signInWithEmailAndPassword(email,password)
+        auth.signInWithEmailAndPassword(email,password)
             .addOnCompleteListener { task->
                 if (task.isSuccessful){
-                    LoginSignupAnimationHelper.showSuccessAnimation(binding.lottieAnimation) {
+                    val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                    var role = ""
+                   firestore.collection("users").document(uid)
+                        .get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists()) {
+                                 role = documentSnapshot.getString("role") ?: ""
+                            }
+                        }
+
+                    if(role == "student" || role == "driver" ) {
                         startActivity(Intent(requireContext(), MainActivity::class.java))
                         requireActivity().finish()
+                    } else {
+                        AlertDialog.Builder(requireContext()).setTitle("Request Pending....")
+                            .setMessage("Authority will approve your joining request")
+                            .setPositiveButton("Okay") {dialog,_ ->
+                                requireActivity().finish()
+                            }
                     }
-                } else {
-                    LoginSignupAnimationHelper.hideAnimation(binding.lottieAnimation)
-                    Toast.makeText(requireContext(), "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+
                 }
             }
     }
 
-//    private fun showAnimation() {
-//        binding.lottieAnimation.apply {
-//            visibility = View.VISIBLE
-//            setAnimation("loading.json")
-//            repeatCount = LottieDrawable.INFINITE
-//            playAnimation()
-//        }
-//    }
-//
-//    private fun hideAnimation(){
-//        binding.lottieAnimation.apply {
-//            cancelAnimation()
-//            visibility = View.GONE
-//        }
-//    }
-//
-//    private fun showSuccessAnimation(onComplete: () -> Unit){
-//        binding.lottieAnimation.apply {
-//            cancelAnimation()
-//            setAnimation("loading_success.json")
-//            repeatCount = 0
-//            playAnimation()
-//
-//            addAnimatorListener(object : AnimatorListenerAdapter(){
-//                override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
-//                    super.onAnimationEnd(animation, isReverse)
-//                    visibility = View.GONE
-//                    removeAnimatorListener(this)
-//                    onComplete()
-//                }
-//            })
-//        }
-//    }
 
 }

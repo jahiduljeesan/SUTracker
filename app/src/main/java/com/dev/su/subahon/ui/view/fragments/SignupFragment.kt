@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dev.su.subahon.ui.view.activity.MainActivity
 import com.dev.su.subahon.R
+import com.dev.su.subahon.data.model.User
 import com.dev.su.subahon.databinding.FragmentSignupBinding
 import com.dev.su.subahon.utils.LoginSignupAnimationHelper
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +35,7 @@ class SignupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.btnBack.setOnClickListener {
             findNavController().navigate(R.id.action_signup_to_login)
         }
@@ -55,9 +57,11 @@ class SignupFragment : Fragment() {
         val password = binding.etPass.text.toString().trim()
         val confirmPassword = binding.etConfirmPass.text.toString().trim()
 
+
         // Validate fields
         if (name.isEmpty() || studentId.isEmpty() || email.isEmpty() ||
             password.isEmpty() || confirmPassword.isEmpty()) {
+
             if (password.length < 6){
                 binding.etPassLayout.error = "Password must be minimum 6 character"
             }
@@ -78,19 +82,20 @@ class SignupFragment : Fragment() {
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
 
-                    val userMap = hashMapOf(
-                        "name" to name,
-                        "email" to email,
-                        "studentId" to studentId,
-                        "status" to "started",
-                        "role" to "student",
-                        "heading" to "N/A",
-                        "routeId" to "",
-                        "location" to GeoPoint(0.0, 0.0)
+                    val user = User(
+                        name = name,
+                        email = email,
+                        phone = "",
+                        role = "none",
+                        routeId = "",
+                        studentId = studentId,
+                        heading = "",
+                        status = "",
+                        isAdmin = false,
                     )
 
                     firestore.collection("users").document(userId)
-                        .set(userMap)
+                        .set(user)
                         .addOnSuccessListener {
                             LoginSignupAnimationHelper.showSuccessAnimation(binding.lottieAnimation) {
                                 startActivity(Intent(requireContext(), MainActivity::class.java))

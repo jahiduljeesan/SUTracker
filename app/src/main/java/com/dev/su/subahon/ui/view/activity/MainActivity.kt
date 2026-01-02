@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.dev.su.subahon.R
 import com.dev.su.subahon.databinding.ActivityMainBinding
 import com.dev.su.subahon.databinding.NoInternetAlertBinding
+import com.dev.su.subahon.utils.FirebaseUtil
 import com.dev.su.subahon.utils.NetworkChangeReceiver
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        FirebaseUtil.auth
+        FirebaseUtil.firestore
 
         val navHost = supportFragmentManager
             .findFragmentById(R.id.navHost) as NavHostFragment
