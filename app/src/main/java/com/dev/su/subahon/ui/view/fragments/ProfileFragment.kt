@@ -2,6 +2,7 @@ package com.dev.su.subahon.ui.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,10 +31,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.fetchUserData()
+        viewModel.startUserListener()
         viewModel.user.observe(viewLifecycleOwner) {user->
-            binding.tvUserName.text = user.name.trim()
-            binding.tvUserEmail.text = user.email.trim()
+            binding.tvUserName.text = user?.name?.trim()
+            binding.tvUserEmail.text = user?.email?.trim()
+            Log.d("ProfileFragment", "User Admin Status: ${user?.admin}")
+            if (user?.admin ?: false) {
+                binding.optionAdmin.visibility = View.VISIBLE
+            }else {
+                binding.optionAdmin.visibility = View.GONE
+            }
         }
 
         binding.btnLogout.setOnClickListener {

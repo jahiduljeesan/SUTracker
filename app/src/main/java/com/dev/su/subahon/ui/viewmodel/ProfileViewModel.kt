@@ -3,33 +3,41 @@ package com.dev.su.subahon.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dev.su.subahon.data.model.User
 import com.dev.su.subahon.utils.FirebaseUtil
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.ListenerRegistration
 
-class ProfileViewModel: ViewModel() {
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User> = _user
+class ProfileViewModel : ViewModel() {
 
-    fun fetchUserData() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid?:return
+    private val _user = MutableLiveData<User?>()
+    val user: LiveData<User?> = _user
 
-        viewModelScope.launch {
-            try {
-                val snapshot = FirebaseUtil.firestore.collection("users")
-                    .document(uid)
-                    .get()
-                    .await()
-                val name = snapshot.getString("name")?:"Unknown"
-                val email = snapshot.getString("email")?:"Unknown"
+    private var listener: ListenerRegistration? = null
 
-                _user.postValue(User(name,email))
-            } catch (e: Exception) {
+    fun startUserListener() {
+        val uid = FirebaseUtil.auth.currentUser?.uid ?: return
 
+        listener = FirebaseUtil.firestore
+            .collection("users")
+            .document(uid)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    _user.postValue(null)
+                    return@addSnapshotListener
+                }
+
+                snapshot?.toObject(User::class.java)?.let {
+                    _user.postValue(it)
+                }
             }
-        }
+    }
+
+    fun stopUserListener() {
+        listener?.remove()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopUserListener()
     }
 }

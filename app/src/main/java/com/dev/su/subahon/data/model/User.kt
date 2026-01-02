@@ -15,7 +15,7 @@ data class User(
     val heading: String = "",
     val status: String = "",
 
-    val isAdmin : Boolean = false,
+    val admin : Boolean = false,
 
     val location: GeoPoint? = null,
     val timestamp: Timestamp? = null

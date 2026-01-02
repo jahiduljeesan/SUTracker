@@ -153,9 +153,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/_8sdp"
+        android:visibility="gone"
         android:background="@drawable/option_bg"
         android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@id/optionAboutDev"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

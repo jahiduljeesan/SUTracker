@@ -92,7 +92,7 @@ class SignupFragment : Fragment() {
                         studentId = studentId,
                         heading = "",
                         status = "",
-                        isAdmin = false,
+                        admin = false,
                     )
 
 
