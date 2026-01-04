@@ -1,16 +1,15 @@
 package com.dev.su.subahon.ui.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dev.su.subahon.R
 import com.dev.su.subahon.data.model.User
 import com.dev.su.subahon.databinding.ItemUserAdminBinding
-import androidx.core.graphics.toColorInt
-import com.dev.su.subahon.R
 
 class AdminAdapter(
-    private val fullList: MutableList<User>
+    private val fullList: MutableList<User>,
+    private val onItemClick : (User) -> Unit
 ) : RecyclerView.Adapter<AdminAdapter.UserVH>() {
 
     private val displayList = mutableListOf<User>()
@@ -41,11 +40,16 @@ class AdminAdapter(
         var bg = when (user.role) {
             "student" -> R.drawable.bg_role_green
             "driver" -> R.drawable.bg_role_driver
+            "blocked" -> R.drawable.bg_role_blocked
             else -> R.drawable.bg_role_gray
         }
 
         if (user.admin) bg =  R.drawable.bg_role_admin
         holder.binding.tvRoleLayout.setBackgroundResource(bg)
+
+        holder.binding.item.setOnClickListener {
+            onItemClick(user)
+        }
     }
 
     override fun getItemCount() = displayList.size

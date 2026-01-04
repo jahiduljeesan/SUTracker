@@ -33,24 +33,26 @@ class ProfileFragment : Fragment() {
 
         viewModel.startUserListener()
         viewModel.user.observe(viewLifecycleOwner) {user->
-            binding.tvUserName.text = user?.name?.trim()
-            binding.tvUserEmail.text = user?.email?.trim()
-            Log.d("ProfileFragment", "User Admin Status: ${user?.admin}")
-            if (user?.admin ?: false) {
-                binding.optionAdmin.visibility = View.VISIBLE
-            }else {
-                binding.optionAdmin.visibility = View.GONE
+            user?.let {
+                if (user.role == "blocked") {
+                    Toast.makeText(requireContext(), "You have been blocked", Toast.LENGTH_SHORT).show()
+                    parseLogout()
+                    return@observe
+                }
+                binding.tvUserName.text = it.name.trim()
+                binding.tvUserEmail.text = it.email.trim()
+                if (user.admin) {
+                    binding.optionAdmin.visibility = View.VISIBLE
+                }else {
+                    binding.optionAdmin.visibility = View.GONE
+                }
             }
+
         }
 
         binding.btnLogout.setOnClickListener {
             Toast.makeText(requireContext(), "Logging out..", Toast.LENGTH_SHORT).show()
-            FirebaseUtil.auth.signOut()
-            val intent = Intent(requireContext(), AuthActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-
-            requireActivity().finish()
+            parseLogout()
         }
 
         binding.optionAboutDev.setOnClickListener {
@@ -61,6 +63,15 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.fragProfile_to_fragAdmin)
         }
 
+    }
+
+    fun parseLogout() {
+        FirebaseUtil.auth.signOut()
+        val intent = Intent(requireContext(), AuthActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+
+        requireActivity().finish()
     }
 
 }

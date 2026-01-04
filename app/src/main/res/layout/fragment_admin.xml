@@ -24,11 +24,12 @@
             android:paddingEnd="@dimen/_12sdp">
 
             <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="@dimen/_23sdp"
-                android:layout_height="@dimen/_23sdp"
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
+                android:padding="@dimen/_7sdp"
                 app:layout_constraintBottom_toBottomOf="@+id/toolbarTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/toolbarTitle"
@@ -45,7 +46,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btnDayFilter"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintStart_toEndOf="@+id/btnBack"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
