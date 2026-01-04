@@ -1,45 +1,89 @@
 package com.dev.su.subahon.ui.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.su.subahon.data.model.User
 import com.dev.su.subahon.databinding.ItemUserAdminBinding
+import androidx.core.graphics.toColorInt
+import com.dev.su.subahon.R
 
-class AdminAdapter (
-    private val users: List<User>
-) : RecyclerView.Adapter<AdminAdapter.UserViewHolder>() {
+class AdminAdapter(
+    private val fullList: MutableList<User>
+) : RecyclerView.Adapter<AdminAdapter.UserVH>() {
 
-    inner class UserViewHolder(val binding: ItemUserAdminBinding)
+    private val displayList = mutableListOf<User>()
+
+    init {
+        displayList.addAll(fullList)
+    }
+
+    inner class UserVH(val binding: ItemUserAdminBinding)
         : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserVH {
         val binding = ItemUserAdminBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return UserViewHolder(binding)
+        return UserVH(binding)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-
-        val user = users[position]
+    override fun onBindViewHolder(holder: UserVH, position: Int) {
+        val user = displayList[position]
 
         holder.binding.tvName.text = user.name
         holder.binding.tvEmail.text = user.email
         holder.binding.tvStudentId.text = "ID: ${user.studentId}"
 
-        holder.binding.tvRole.text = user.role.uppercase()
+        holder.binding.tvRole.text = if (user.admin)"ADMIN" else user.role.uppercase()
 
-        val color = when (user.role) {
-            "student" -> "#4CAF50".toColorInt()
-            "driver" -> "#2196F3".toColorInt()
-            "admin" -> "#F44336".toColorInt()
-            else -> "#FFC107".toColorInt()
+        var bg = when (user.role) {
+            "student" -> R.drawable.bg_role_green
+            "driver" -> R.drawable.bg_role_driver
+            else -> R.drawable.bg_role_gray
         }
 
-        holder.binding.tvRole.setBackgroundColor(color)
+        if (user.admin) bg =  R.drawable.bg_role_admin
+        holder.binding.tvRoleLayout.setBackgroundResource(bg)
     }
 
-    override fun getItemCount() = users.size
+    override fun getItemCount() = displayList.size
+
+    fun filterByQuery(query: String) {
+        displayList.clear()
+
+        if (query.isBlank()) {
+            displayList.addAll(fullList)
+        } else {
+            val q = query.lowercase()
+            displayList.addAll(
+                fullList.filter {
+                    it.name.lowercase().contains(q) ||
+                            it.email.lowercase().contains(q) ||
+                            it.studentId.lowercase().contains(q)
+                }
+            )
+        }
+        notifyDataSetChanged()
+    }
+
+    fun filterByRole(role: String) {
+        displayList.clear()
+
+        if (role == "all") {
+            displayList.addAll(fullList)
+        } else {
+            displayList.addAll(fullList.filter { it.role == role })
+        }
+        notifyDataSetChanged()
+    }
+
+    fun updateData(newList: List<User>) {
+        fullList.clear()
+        fullList.addAll(newList)
+        displayList.clear()
+        displayList.addAll(newList)
+        notifyDataSetChanged()
+    }
 }

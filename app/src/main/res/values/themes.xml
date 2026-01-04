@@ -14,4 +14,13 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="CustomSeachView" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="searchIcon">@drawable/ic_search</item>
+        <item name="android:textColorHighlight">@color/primary_blue</item>
+        <item name="iconTint">@color/primary_blue</item>
+
+    </style>
+
 </resources>
