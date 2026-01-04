@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dev.su.subahon.R
 import com.dev.su.subahon.data.model.User
+import com.dev.su.subahon.databinding.AddDriverAllertStyleBinding
 import com.dev.su.subahon.databinding.FragmentAdminBinding
 import com.dev.su.subahon.ui.adapter.AdminAdapter
 import com.dev.su.subahon.ui.viewmodel.ProfileViewModel
@@ -78,11 +81,44 @@ class AdminFragment : Fragment() {
     }
 
     private fun noneDialog(user: User) {
+        dialogHelper(
+            "User pending",
+            "What to you want to do",
+            "Approve",
+            positiveAction = {
+                profileVM.setUser(user.email) {
+                    it.reference.update("role", "student")
+                }
+            },
+            "Cancel",
+            negativeAction = {
 
+            },
+        )
     }
 
     private fun driverDialog(user: User) {
+        dialogHelper(
+            "Driver",
+            "What to you want to do",
+            "Make Student",
+            positiveAction = {
+                profileVM.setUser(user.email) {
+                    it.reference.update("role", "student")
+                }
+            },
+            "Cancel",
+            negativeAction = {
 
+
+            },
+            "Block",
+            neutralAction = {
+                profileVM.setUser(user.email) {
+                    it.reference.update("role", "blocked")
+                }
+            }
+        )
     }
 
     private fun studentDialog(user: User) {
@@ -99,8 +135,54 @@ class AdminFragment : Fragment() {
             negativeAction = {},
             "Make Driver",
             neutralAction = {
+                val binding = AddDriverAllertStyleBinding.inflate(LayoutInflater.from(requireContext()))
 
+                val routes = listOf("bus1", "bus2", "bus3", "bus4")
+                binding.spRoute.adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    routes
+                )
+
+                val alertDialog = AlertDialog.Builder(requireContext())
+                    .setView(binding.root)
+                    .setCancelable(false)
+                    .create()
+
+                binding.btnCancel.setOnClickListener {
+                    alertDialog.dismiss()
+                }
+
+                binding.btnAdd.setOnClickListener {
+                    val routeId = binding.spRoute.selectedItem?.toString()?.trim().orEmpty()
+                    val phone = binding.etPhone.text?.toString()?.trim().orEmpty()
+
+                    if (phone.isEmpty()) {
+                        binding.etPhone.error = "Phone number required"
+                        return@setOnClickListener
+                    }
+
+                    if (phone.length < 10) {
+                        binding.etPhone.error = "Enter a valid phone number"
+                        return@setOnClickListener
+                    }
+
+                    profileVM.setUser(user.email) {
+                        it.reference.update(
+                            mapOf(
+                                "role" to "driver",
+                                "routeId" to routeId,
+                                "phone" to phone
+                            )
+                        )
+                    }
+
+                    alertDialog.dismiss()
+                }
+
+                alertDialog.show()
             }
+
         )
     }
 
