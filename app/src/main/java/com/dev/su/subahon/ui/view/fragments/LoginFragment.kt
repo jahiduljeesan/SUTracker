@@ -40,6 +40,28 @@ class LoginFragment : Fragment() {
             setLogin()
         }
 
+        binding.btnForgotPass.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+            if (email.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Success...")
+                        .setMessage("Please check your email for reset link")
+                        .setPositiveButton("Okay") {
+                            dialog,_ ->
+                            dialog.dismiss()
+                        }
+                        .create().show()
+                }else {
+                    Toast.makeText(requireContext(), "Error: ${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 

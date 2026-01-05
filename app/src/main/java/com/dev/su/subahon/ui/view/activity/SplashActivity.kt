@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.dev.su.subahon.R
 import com.dev.su.subahon.databinding.ActivitySplashBinding
 import com.dev.su.subahon.utils.FirebaseUtil
+import androidx.core.content.edit
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
@@ -28,6 +29,7 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
 
+
         val fadeAnimation = AnimationUtils.loadAnimation(this@SplashActivity, R.anim.text_fade_in)
         binding.tvAppName.startAnimation(fadeAnimation)
         val slideAnimation: Animation = AnimationUtils.loadAnimation(this@SplashActivity, R.anim.image_splash_anim)
@@ -40,7 +42,10 @@ class SplashActivity : AppCompatActivity() {
                 if (isLoggedIn()) {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 }else{
-                    startActivity(Intent(this@SplashActivity, AuthActivity::class.java))
+                    val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
+
+                    startActivity(Intent(this@SplashActivity,
+                        if (!first_run) AuthActivity::class.java else OnboardActivity::class.java))
                 }
             }
         })

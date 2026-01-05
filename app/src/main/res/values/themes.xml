@@ -23,4 +23,9 @@
 
     </style>
 
+    <style name="OnboardImageStyle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomRight">80dp</item>
+    </style>
+
 </resources>
