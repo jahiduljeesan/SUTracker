@@ -32,6 +32,7 @@ class OnboardActivity : AppCompatActivity() {
             if (viewPager.currentItem < 2) {
                 viewPager.currentItem += 1
             } else {
+                getSharedPreferences("settings", MODE_PRIVATE).edit().putBoolean("first_run", false).apply()
                 startActivity(Intent(this, AuthActivity::class.java))
                 finish()
             }

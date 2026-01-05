@@ -42,11 +42,13 @@ class SplashActivity : AppCompatActivity() {
             override fun onAnimationEnd(animation: Animation?) {
                 if (isLoggedIn()) {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                    finish()
                 }else{
                     val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
 
                     startActivity(Intent(this@SplashActivity,
-                        if (!first_run) AuthActivity::class.java else AuthActivity::class.java))
+                        if (!first_run) AuthActivity::class.java else OnboardActivity::class.java))
+                    finish()
                 }
             }
         })
