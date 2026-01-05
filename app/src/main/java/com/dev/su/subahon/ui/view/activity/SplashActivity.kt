@@ -14,6 +14,7 @@ import com.dev.su.subahon.R
 import com.dev.su.subahon.databinding.ActivitySplashBinding
 import com.dev.su.subahon.utils.FirebaseUtil
 import androidx.core.content.edit
+import com.dev.su.subahon.ui.view.onboard.OnboardActivity
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
@@ -45,7 +46,7 @@ class SplashActivity : AppCompatActivity() {
                     val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
 
                     startActivity(Intent(this@SplashActivity,
-                        if (!first_run) AuthActivity::class.java else OnboardActivity::class.java))
+                        if (!first_run) AuthActivity::class.java else AuthActivity::class.java))
                 }
             }
         })
