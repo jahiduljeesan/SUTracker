@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation("com.onesignal:OneSignal:[5.1.0, 5.1.99]")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
