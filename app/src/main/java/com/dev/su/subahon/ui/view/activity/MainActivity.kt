@@ -18,6 +18,10 @@ import com.dev.su.subahon.databinding.ActivityMainBinding
 import com.dev.su.subahon.databinding.NoInternetAlertBinding
 import com.dev.su.subahon.utils.FirebaseUtil
 import com.dev.su.subahon.utils.NetworkChangeReceiver
+import com.onesignal.OneSignal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -28,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        showNotificationRationaleDialog()
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -42,18 +49,6 @@ class MainActivity : AppCompatActivity() {
         val navController = navHost.navController
 
         binding.bottomNav.setupWithNavController(navController)
-
-//        val message = """
-//                 Md. Farhan Hossain
-//            Junior Mobile App Developer
-//                    BdCalling It
-//        """.trimIndent()
-//
-//        val dialog = AlertDialog.Builder(this)
-//            .setTitle("This app is property of ")
-//            .setMessage(message)
-//            .create()
-//        dialog.show()
 
         navController.addOnDestinationChangedListener { _,destination,_ ->
             if(destination.id == R.id.fragDevInfo
@@ -97,4 +92,26 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         unregisterReceiver(networkChangeReceiver)
     }
+
+    fun showNotificationRationaleDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Enable Notifications")
+            .setMessage(
+                "We use notifications to:\n" +
+                        "• Send bus arrival updates\n" +
+                        "• Notify route changes and delays\n" +
+                        "• Share important announcements\n\n" +
+                        "You can turn them off anytime in Settings."
+            )
+            .setNegativeButton("Not now") { d, _ -> d.dismiss() }
+            .setPositiveButton("Allow") { d, _ ->
+                d.dismiss()
+                // This will show Android notification permission dialog (Android 13+)
+                CoroutineScope(Dispatchers.IO).launch {
+                    OneSignal.Notifications.requestPermission(true)
+                }
+            }
+            .show()
+    }
+
 }
