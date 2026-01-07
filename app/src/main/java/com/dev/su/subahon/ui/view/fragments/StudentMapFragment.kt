@@ -291,6 +291,8 @@ class StudentMapFragment : Fragment(), OnMapReadyCallback {
         viewModel.buses.observe(viewLifecycleOwner) { buses ->
             if (!::map.isInitialized || _binding == null) return@observe
 
+            binding.tvBusCount.setText("${buses.size}")
+
             binding.lottieLoading.visibility = View.GONE
             if (buses.isNullOrEmpty()) {
                 binding.noBusAnim.visibility = View.VISIBLE
