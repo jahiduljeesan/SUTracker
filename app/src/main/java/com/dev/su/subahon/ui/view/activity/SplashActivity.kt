@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,9 +16,11 @@ import com.dev.su.subahon.databinding.ActivitySplashBinding
 import com.dev.su.subahon.utils.FirebaseUtil
 import androidx.core.content.edit
 import com.dev.su.subahon.ui.view.onboard.OnboardActivity
+import com.dev.su.subahon.ui.viewmodel.ProfileViewModel
 
 class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
+    private val profileVm : ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,10 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
 
+        var userRole = ""
+        profileVm.user.observe(this) {
+            userRole = it?.role ?: ""
+        }
 
         val fadeAnimation = AnimationUtils.loadAnimation(this@SplashActivity, R.anim.text_fade_in)
         binding.tvAppName.startAnimation(fadeAnimation)
@@ -39,17 +46,18 @@ class SplashActivity : AppCompatActivity() {
         slideAnimation.setAnimationListener(object : Animation.AnimationListener{
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
-            override fun onAnimationEnd(animation: Animation?) {
-                if (isLoggedIn()) {
+            override fun onAnimationEnd(animation: Animation?) = if (isLoggedIn()) {
+                if (userRole.isEmpty() || userRole == "none" || userRole == "blocked") {
+                    startActivity(Intent(this@SplashActivity, AuthActivity::class.java))
+                }else {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                    finish()
-                }else{
-                    val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
-
-                    startActivity(Intent(this@SplashActivity,
-                        if (!first_run) AuthActivity::class.java else OnboardActivity::class.java))
-                    finish()
                 }
+            }else{
+                val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
+
+                startActivity(Intent(this@SplashActivity,
+                    if (!first_run) AuthActivity::class.java else OnboardActivity::class.java))
+                finish()
             }
         })
     }
