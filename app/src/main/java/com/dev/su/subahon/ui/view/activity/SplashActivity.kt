@@ -52,6 +52,7 @@ class SplashActivity : AppCompatActivity() {
                 }else {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                 }
+                finish()
             }else{
                 val first_run = getSharedPreferences("settings",MODE_PRIVATE).getBoolean("first_run",true)
 
