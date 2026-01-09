@@ -7,4 +7,16 @@
         <item>Up</item>
         <item>Down</item>
     </string-array>
+
+    <string name="about_app">
+        SU Bahon is a real‑time university bus tracking and schedule application designed specially for the students and staff of Sonargaon University. The main purpose of this app is to remove the uncertainty and stress of waiting for buses without knowing where they are or when they will arrive.
+
+Using SU Bahon, students can see the live location of active university buses on Google Maps. Each bus is shown with its route name, driver name, heading direction (up or down), and distance from the student’s current position. By tapping on a bus, students can open a detailed view that shows the full route, status such as “Arriving now”, and a direct Call Driver button for quick communication.
+
+The app also includes a Bus Schedule section. Students can select any day of the week and view all scheduled buses for that day, including incoming and outgoing trips, driver contact information, major stops and approximate times. This helps students to plan their journey in advance instead of guessing or depending on informal messages.
+
+SU Bahon supports three user roles: Student, Driver and Admin. Only admin‑approved users can access the app. Approved drivers can start and stop live tracking with a single tap, and admins can manage users by approving, blocking or changing their roles. The app is built using Android (Kotlin), Firebase Firestore and Authentication, the FusedLocationProviderClient and Google Maps SDK.
+
+SU Bahon is a non‑commercial academic project developed to improve the daily commuting experience of Sonargaon University students and to demonstrate the practical use of modern mobile and cloud technologies.
+    </string>
 </resources>
